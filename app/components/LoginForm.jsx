@@ -36,18 +36,19 @@ export default function LoginForm() {
 
   return (
     <AuthShell
+      index="Log in"
       title="Welcome back"
-      subtitle="Log in to keep tracking your day."
+      subtitle="Pick up where the day left off."
       footer={
         <>
           No account yet?{" "}
-          <Link href="/register" className="font-medium text-emerald-700 hover:underline">
+          <Link href="/register" className="text-cobalt hover:text-vermilion">
             Create one
           </Link>
         </>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-5">
         <Field label="Email" error={fields.email}>
           <Input
             type="email"

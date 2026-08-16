@@ -37,18 +37,19 @@ export default function RegisterForm() {
 
   return (
     <AuthShell
+      index="Sign up"
       title="Create your account"
       subtitle="Takes a few seconds. No card, no spam."
       footer={
         <>
           Already registered?{" "}
-          <Link href="/login" className="font-medium text-emerald-700 hover:underline">
+          <Link href="/login" className="text-cobalt hover:text-vermilion">
             Log in
           </Link>
         </>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-5">
         <Field label="Name" error={fields.name}>
           <Input
             autoComplete="name"
