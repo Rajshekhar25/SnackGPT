@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { publicUser } from "@/lib/api";
 import { Header } from "@/app/components/Header";
 import { ProfileForm } from "@/app/components/ProfileForm";
+import { LABEL } from "@/app/components/ui";
 
 export const metadata = { title: "Profile — SnackGPT" };
 
@@ -15,10 +16,13 @@ export default async function ProfilePage() {
   return (
     <>
       <Header user={safeUser} />
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6">
-        <h1 className="mb-5 text-xl font-semibold tracking-tight text-zinc-900">
-          Profile &amp; targets
-        </h1>
+      <main className="mx-auto w-full max-w-310 flex-1 px-6 py-10 sm:px-14">
+        <div className="mb-8">
+          <span className={`${LABEL} tracking-[0.24em] text-cobalt`}>Settings</span>
+          <h1 className="mt-3 text-3xl font-bold tracking-[-0.04em] text-ink sm:text-4xl">
+            Profile &amp; targets
+          </h1>
+        </div>
         <ProfileForm user={safeUser} />
       </main>
     </>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Calculator, Check } from "lucide-react";
 import { api, messageFrom } from "@/lib/client";
 import { ACTIVITY_LABELS } from "@/lib/nutrition";
-import { Alert, Button, Card, Field, Input, Select, Textarea } from "./ui";
+import { Alert, Button, Field, Input, LABEL, Select, Textarea } from "./ui";
 
 const DIET_OPTIONS = [
   ["none", "No preference"],
@@ -51,6 +51,28 @@ function buildPayload(form) {
     healthConditions: form.healthConditions.trim() || null,
     dietaryPref: form.dietaryPref || null,
   };
+}
+
+function Panel({ index, title, description, action, children }) {
+  return (
+    <section className="border-2 border-ink bg-paper">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink px-6 py-4">
+        <div className="flex items-baseline gap-4">
+          <span className={`${LABEL} tracking-[0.24em] text-vermilion`}>{index}</span>
+          <div>
+            <h2 className={`${LABEL} text-ink`}>{title}</h2>
+            {description && (
+              <p className="mt-1 font-mono text-[10px] tracking-widest text-ink/50">
+                {description}
+              </p>
+            )}
+          </div>
+        </div>
+        {action}
+      </div>
+      <div className="p-6">{children}</div>
+    </section>
+  );
 }
 
 export function ProfileForm({ user }) {
@@ -115,19 +137,19 @@ export function ProfileForm({ user }) {
         e.preventDefault();
         submit({ autoCalculate: false });
       }}
-      className="space-y-5"
+      className="space-y-0.5"
     >
       {isOnboarding && (
-        <Alert tone="info">
-          Welcome, {user.name}. Fill this in once and SnackGPT can work out your daily
-          targets and tailor its food suggestions.
-        </Alert>
+        <div className="pb-5">
+          <Alert tone="info" label="Welcome">
+            Fill this in once and SnackGPT can work out your daily targets and tailor its
+            food suggestions.
+          </Alert>
+        </div>
       )}
 
-      <Card>
-        <h2 className="mb-4 text-sm font-semibold text-zinc-900">About you</h2>
-
-        <div className="grid gap-4 sm:grid-cols-2">
+      <Panel index="01" title="About you">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Name" error={fields.name}>
             <Input value={form.name} onChange={update("name")} required />
           </Field>
@@ -199,17 +221,14 @@ export function ProfileForm({ user }) {
             </Field>
           </div>
         </div>
-      </Card>
+      </Panel>
 
-      <Card>
-        <h2 className="mb-1 text-sm font-semibold text-zinc-900">
-          Health &amp; diet
-        </h2>
-        <p className="mb-4 text-sm text-zinc-500">
-          Both are passed to the AI so its suggestions actually suit you.
-        </p>
-
-        <div className="space-y-4">
+      <Panel
+        index="02"
+        title="Health & diet"
+        description="Both are passed to the AI so its suggestions suit you"
+      >
+        <div className="space-y-5">
           <Field
             label="Health conditions"
             error={fields.healthConditions}
@@ -234,28 +253,24 @@ export function ProfileForm({ user }) {
             </Select>
           </Field>
         </div>
-      </Card>
+      </Panel>
 
-      <Card>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-sm font-semibold text-zinc-900">Daily targets</h2>
-            <p className="text-sm text-zinc-500">
-              Edit by hand, or let the Mifflin-St Jeor formula fill them in.
-            </p>
-          </div>
-
+      <Panel
+        index="03"
+        title="Daily targets"
+        description="Edit by hand, or run Mifflin-St Jeor"
+        action={
           <Button
             type="button"
             variant="secondary"
             loading={calculating}
             onClick={() => submit({ autoCalculate: true })}
           >
-            {!calculating && <Calculator className="h-4 w-4" />}
+            {!calculating && <Calculator className="h-3.5 w-3.5" />}
             Auto-calculate
           </Button>
-        </div>
-
+        }
+      >
         <div className="grid gap-4 sm:grid-cols-4">
           <Field label="Calories" error={fields.targetCalories}>
             <Input
@@ -282,16 +297,25 @@ export function ProfileForm({ user }) {
             <Input type="number" value={form.targetFat} onChange={update("targetFat")} />
           </Field>
         </div>
-      </Card>
+      </Panel>
 
-      <Alert>{error}</Alert>
-      <Alert tone="info">{notice}</Alert>
+      <div className="space-y-4 pt-5">
+        <Alert>{error}</Alert>
+        <Alert tone="info" label="Saved">
+          {notice}
+        </Alert>
 
-      <div className="flex justify-end">
-        <Button type="submit" loading={saving}>
-          {!saving && (isOnboarding ? <ArrowRight className="h-4 w-4" /> : <Check className="h-4 w-4" />)}
-          {isOnboarding ? "Save and start tracking" : "Save changes"}
-        </Button>
+        <div className="flex justify-end">
+          <Button type="submit" loading={saving}>
+            {!saving &&
+              (isOnboarding ? (
+                <ArrowRight className="h-3.5 w-3.5" />
+              ) : (
+                <Check className="h-3.5 w-3.5" />
+              ))}
+            {isOnboarding ? "Save and start tracking" : "Save changes"}
+          </Button>
+        </div>
       </div>
     </form>
   );
