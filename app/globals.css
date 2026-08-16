@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* Light-only on purpose: form controls and the macro bar palette are tuned for
+   one background, so we opt out of the browser's dark rendering entirely. */
+:root {
+  color-scheme: light;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background-color: #f6f7f9;
+  color: #18181b;
+}
+
+/* Number inputs: the spinners fight with macro fields that sit side by side. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
