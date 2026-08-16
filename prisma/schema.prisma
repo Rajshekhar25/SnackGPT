@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String @id @default(cuid())
+  email        String @unique
+  passwordHash String
+  name         String
+
+  // Optional profile metrics — used by the Mifflin-St Jeor TDEE engine in lib/nutrition.js
+  age              Int?
+  gender           String? // "male" | "female" | "other"
+  heightCm         Float?
+  weightKg         Float?
+  targetWeightKg   Float?
+  activityLevel    String? // "sedentary" | "light" | "moderate" | "active" | "very_active"
+  healthConditions String? // free text, e.g. "Type 2 Diabetes, Hypertension"
+  dietaryPref      String? // "vegetarian" | "vegan" | "keto" | "none" | ...
+
+  targetCalories Int @default(2000)
+  targetProtein  Int @default(150)
+  targetCarbs    Int @default(200)
+  targetFat      Int @default(65)
+
+  // Rate-limit counter lives on the user row so it survives across stateless serverless invocations
+  aiRequestCount       Int      @default(0)
+  aiRequestWindowStart DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions Session[]
+  meals    MealLog[]
+}
+
+model Session {
+  id        String   @id // opaque random token generated in app code, NOT @default(cuid()) — see lib/auth.js
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model MealLog {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date     String // "YYYY-MM-DD", for efficient per-day querying
+  name     String
+  calories Int
+  protein  Float
+  carbs    Float
+  fat      Float
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+}
