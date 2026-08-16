@@ -35,6 +35,24 @@ Gemini API. Runs entirely on free tiers.
 | Validation | zod, on every API route *and* on every AI response |
 | AI | Google Gemini (`@google/genai`) in structured-JSON mode (`responseSchema`) |
 
+## Design system
+
+The interface is built like a printed sheet rather than a stack of floating cards.
+
+| | |
+| --- | --- |
+| Palette | Ink `#101014`, bone `#EDE9E0`, paper `#F7F4EE`; vermilion `#E33B2E`, cobalt `#2B4BF2`, gold `#C8A227`, moss `#1B6E4F` |
+| Greys | None. Text hierarchy is ink at `1.0 / 0.66 / 0.50 / 0.38` opacity |
+| Type | **Archivo** 700 for anything you read, tracking `-0.03em`; **Space Mono** uppercase `+0.2em` for anything you scan — labels, macros, dates, statuses |
+| Structure | Square corners everywhere, 2px ink borders, 1px dividers at `ink/15`, 2px grid gaps so panels nearly touch |
+| Page | 1240px max width, 56px margins, crop marks fixed 26px from the viewport edge |
+| Motion | 180ms colour, 240ms reveal, 320ms travel, `cubic-bezier(0.2, 0.8, 0.2, 1)`. Nothing bounces or scales from zero |
+| Texture | A 3px scanline overlay at 45% opacity, multiplied over the page |
+
+Every value lives as a Tailwind v4 theme token in [`app/globals.css`](app/globals.css); the
+primitives that consume them are in [`app/components/ui.jsx`](app/components/ui.jsx). Change a
+colour there, not in a component.
+
 ## Architecture notes
 
 **Why no JWT.** The session token is 32 random bytes used directly as the `Session` row's
@@ -116,6 +134,12 @@ NODE_ENV="development"
 
 > `AI_MODEL` is optional and defaults to `gemini-flash-latest`. Pinned model names such as
 > `gemini-2.5-flash` are retired for new API keys, so the rolling alias is the safe default.
+
+> **Free-tier ceiling.** Google allows a fixed number of requests *per model per day* (20 at
+> the time of writing). That is a separate limit from this app's 5-per-hour cap and waiting an
+> hour will not clear it — the app reports it as its own message and manual entry keeps
+> working. Setting `AI_MODEL` to a different model (e.g. `gemini-flash-lite-latest`) gives you
+> a fresh daily allowance.
 
 ### 4. Try it
 

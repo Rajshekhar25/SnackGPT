@@ -181,7 +181,28 @@ would otherwise let an attacker enumerate valid ids.
 
 ---
 
-## 13. Login is deliberately vague about failures
+## 13. The interface is a printed sheet, not a dashboard
+
+**Choice.** Square corners, 2px ink borders, 1px dividers, 2px grid gaps, crop marks at the
+viewport edge, and a faint scanline texture over everything. Two typefaces with strictly
+separated jobs: Archivo for prose, Space Mono — uppercase, wide-tracked — for every label,
+macro figure, date and status.
+
+**Alternative rejected.** The default SaaS look: rounded cards, drop shadows, a grey scale, one
+font doing all jobs.
+
+**Why.** Shadows and radii imply depth this app does not have. A tracker is a record, and the
+system leans into that: panels butt against each other so a screen reads as one sheet, and the
+mono/prose split means you can tell at a glance whether something is a *value* or a *sentence*
+without reading it. There is no grey ramp — every dim tone is ink at reduced opacity, so
+nothing drifts off-palette.
+
+**Cost.** More discipline required: a stray `rounded-lg` or a grey hex is immediately visible.
+The Tailwind theme deletes the radius scale outright to make that mistake harder.
+
+---
+
+## 14. Login is deliberately vague about failures
 
 **Choice.** "Incorrect email or password" for both an unknown email and a wrong password.
 
