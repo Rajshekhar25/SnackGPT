@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Check, Sparkles, X } from "lucide-react";
 import { api, messageFrom } from "@/lib/client";
-import { Alert, Button, Input } from "./ui";
+import { Alert, Button, Input, LABEL } from "./ui";
 
 const EXAMPLE = "2 boiled eggs, a cup of curd, and an apple";
+const MACRO_KEYS = ["calories", "protein", "carbs", "fat"];
 
 /**
  * Natural language → Gemini → an editable preview. Nothing is written to the
@@ -76,8 +77,8 @@ export function AiQuickAdd({ date, onAdded, onAiUsage }) {
   }
 
   return (
-    <div className="space-y-3">
-      <form onSubmit={parse} className="flex flex-col gap-2 sm:flex-row">
+    <div className="space-y-4">
+      <form onSubmit={parse} className="flex flex-col gap-0.5 sm:flex-row">
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -86,36 +87,39 @@ export function AiQuickAdd({ date, onAdded, onAiUsage }) {
           required
         />
         <Button type="submit" loading={parsing} className="shrink-0">
-          {!parsing && <Sparkles className="h-4 w-4" />}
+          {!parsing && <Sparkles className="h-3.5 w-3.5" />}
           Parse &amp; add
         </Button>
       </form>
 
       {!items && !error && (
-        <p className="text-xs text-zinc-500">
-          Write it however you&apos;d say it — AI estimates the macros, and you can fix
-          any number before it&apos;s saved.
+        <p className="font-mono text-[10px] leading-relaxed tracking-widest text-ink/50">
+          Write it however you&apos;d say it. AI estimates the macros — you fix any number
+          before it is saved.
         </p>
       )}
 
       <Alert>{error}</Alert>
 
       {items && (
-        <div className="rounded-lg bg-zinc-50 p-3 ring-1 ring-zinc-200">
-          <p className="mb-2 text-xs font-medium text-zinc-600">
-            Estimated — edit anything that looks off, then confirm.
-          </p>
+        <div className="border-2 border-ink bg-bone">
+          <div className="flex items-center justify-between border-b-2 border-ink px-4 py-3">
+            <span className={`${LABEL} text-ink`}>Estimate</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vermilion">
+              Not saved yet
+            </span>
+          </div>
 
-          <div className="space-y-2">
+          <div className="space-y-0.5 p-4">
             {items.map((item, index) => (
-              <div key={index} className="grid grid-cols-2 gap-2 sm:grid-cols-6">
+              <div key={index} className="grid grid-cols-2 gap-0.5 sm:grid-cols-6">
                 <Input
                   className="sm:col-span-2"
                   value={item.name}
                   aria-label="Item name"
                   onChange={(e) => editItem(index, "name", e.target.value)}
                 />
-                {["calories", "protein", "carbs", "fat"].map((key) => (
+                {MACRO_KEYS.map((key) => (
                   <Input
                     key={key}
                     type="number"
@@ -131,17 +135,17 @@ export function AiQuickAdd({ date, onAdded, onAiUsage }) {
             ))}
           </div>
 
-          <p className="mt-1.5 text-xs text-zinc-500">
-            Columns: name, calories, protein, carbs, fat.
+          <p className="px-4 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/50">
+            Name · Calories · Protein · Carbs · Fat
           </p>
 
-          <div className="mt-3 flex gap-2">
+          <div className="flex flex-wrap gap-0.5 p-4">
             <Button onClick={confirm} loading={saving}>
-              {!saving && <Check className="h-4 w-4" />}
+              {!saving && <Check className="h-3.5 w-3.5" />}
               Add {items.length} {items.length === 1 ? "item" : "items"}
             </Button>
             <Button variant="ghost" onClick={() => setItems(null)} disabled={saving}>
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
               Discard
             </Button>
           </div>

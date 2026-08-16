@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { shiftDateKey } from "@/lib/day";
-import { Button } from "./ui";
+import { Button, IconButton, LABEL } from "./ui";
 
 // `today` is passed in rather than read here: it is a browser-local value the
 // server cannot know (see Dashboard.jsx).
@@ -19,34 +19,21 @@ function label(dateKey, today) {
 
 export function DateNavigator({ date, today, onChange }) {
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="secondary"
-        onClick={() => onChange(shiftDateKey(date, -1))}
-        aria-label="Previous day"
-      >
+    <div className="flex items-stretch gap-0.5">
+      <IconButton onClick={() => onChange(shiftDateKey(date, -1))} aria-label="Previous day">
         <ChevronLeft className="h-4 w-4" />
-      </Button>
+      </IconButton>
 
-      <div className="min-w-32 text-center">
-        <p className="text-sm font-semibold text-zinc-900">{label(date, today)}</p>
-        <p className="font-mono text-xs text-zinc-500">{date}</p>
+      <div className="flex min-w-36 flex-col items-center justify-center border-2 border-ink px-4">
+        <p className={`${LABEL} tracking-[0.16em] text-ink`}>{label(date, today)}</p>
+        <p className="font-mono text-[10px] text-ink/50">{date}</p>
       </div>
 
-      <Button
-        variant="secondary"
-        onClick={() => onChange(shiftDateKey(date, 1))}
-        aria-label="Next day"
-      >
+      <IconButton onClick={() => onChange(shiftDateKey(date, 1))} aria-label="Next day">
         <ChevronRight className="h-4 w-4" />
-      </Button>
+      </IconButton>
 
-      <Button
-        variant="ghost"
-        onClick={() => onChange(today)}
-        disabled={date === today}
-        className="ml-1"
-      >
+      <Button variant="ghost" onClick={() => onChange(today)} disabled={date === today}>
         Today
       </Button>
     </div>

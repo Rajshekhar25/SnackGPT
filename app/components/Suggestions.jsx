@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Lightbulb, Plus } from "lucide-react";
 import { api, messageFrom } from "@/lib/client";
-import { Alert, Button, Card } from "./ui";
+import { Alert, Button, LABEL } from "./ui";
+
+// Cards are indexed and colour-coded in order, the way a tool grid is.
+const ACCENTS = ["bg-vermilion", "bg-cobalt", "bg-gold"];
 
 export function Suggestions({ date, onAdded, onAiUsage }) {
   const [suggestions, setSuggestions] = useState(null);
@@ -51,58 +54,76 @@ export function Suggestions({ date, onAdded, onAiUsage }) {
   }
 
   return (
-    <Card>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-sm font-semibold text-zinc-900">What should I eat next?</h2>
-          <p className="text-sm text-zinc-500">
-            Built from what&apos;s left in today&apos;s budget, your health conditions
-            and your diet.
-          </p>
+    <section>
+      <div className="flex flex-wrap items-end justify-between gap-4 border-t-2 border-ink pt-6">
+        <div className="flex items-baseline gap-4">
+          <span className={`${LABEL} tracking-[0.24em] text-cobalt`}>02</span>
+          <div>
+            <h2 className="text-xl font-bold tracking-[-0.03em] text-ink sm:text-2xl">
+              What should I eat next?
+            </h2>
+            <p className="mt-1 max-w-lg text-sm leading-relaxed text-ink/66">
+              Built from what is left in today&apos;s budget, your health conditions and
+              your diet.
+            </p>
+          </div>
         </div>
 
         <Button variant="secondary" onClick={fetchSuggestions} loading={loading}>
-          {!loading && <Lightbulb className="h-4 w-4" />}
+          {!loading && <Lightbulb className="h-3.5 w-3.5" />}
           {suggestions ? "Suggest again" : "Suggest food"}
         </Button>
       </div>
 
-      {error && <div className="mt-3">
-        <Alert>{error}</Alert>
-      </div>}
+      {error && (
+        <div className="mt-5">
+          <Alert>{error}</Alert>
+        </div>
+      )}
 
       {suggestions && (
-        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+        <ul className="mt-5 grid gap-0.5 sm:grid-cols-3">
           {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              className="flex flex-col rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200"
-            >
-              <p className="text-sm font-semibold text-zinc-900">{suggestion.title}</p>
-              <p className="text-xs text-zinc-500">{suggestion.portion}</p>
+            <li key={index} className="flex flex-col border-2 border-ink bg-paper">
+              <div className={`h-2 ${ACCENTS[index % ACCENTS.length]}`} />
 
-              <p className="mt-2 font-mono text-xs text-zinc-600">
-                {suggestion.calories} kcal · P {suggestion.protein} · C{" "}
-                {suggestion.carbs} · F {suggestion.fat}
-              </p>
+              <div className="flex flex-1 flex-col gap-3 p-5">
+                <span className={`${LABEL} text-ink/45`}>
+                  {String(index + 1).padStart(2, "0")} · Option
+                </span>
 
-              <p className="mt-2 flex-1 text-xs leading-relaxed text-zinc-600">
-                {suggestion.reason}
-              </p>
+                <div>
+                  <h3 className="text-lg font-bold leading-tight tracking-[-0.03em] text-ink">
+                    {suggestion.title}
+                  </h3>
+                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/50">
+                    {suggestion.portion}
+                  </p>
+                </div>
 
-              <Button
-                variant="secondary"
-                className="mt-3 w-full"
-                loading={addingIndex === index}
-                onClick={() => log(suggestion, index)}
-              >
-                {addingIndex !== index && <Plus className="h-4 w-4" />}
-                Log this
-              </Button>
+                <p className="font-mono text-[11px] text-ink/66">
+                  {suggestion.calories} kcal · P {suggestion.protein} · C{" "}
+                  {suggestion.carbs} · F {suggestion.fat}
+                </p>
+
+                <p className="flex-1 text-sm leading-relaxed text-ink/66">
+                  {suggestion.reason}
+                </p>
+
+                <Button
+                  variant="secondary"
+                  className="w-full"
+                  loading={addingIndex === index}
+                  onClick={() => log(suggestion, index)}
+                >
+                  {addingIndex !== index && <Plus className="h-3.5 w-3.5" />}
+                  Log this
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
       )}
-    </Card>
+    </section>
   );
 }

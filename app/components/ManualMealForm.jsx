@@ -42,7 +42,7 @@ export function ManualMealForm({ date, onAdded }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3">
+    <form onSubmit={onSubmit} className="space-y-4">
       <Field label="Food">
         <Input
           required
@@ -98,7 +98,7 @@ export function ManualMealForm({ date, onAdded }) {
       <Alert>{error}</Alert>
 
       <Button type="submit" loading={saving}>
-        {!saving && <Plus className="h-4 w-4" />}
+        {!saving && <Plus className="h-3.5 w-3.5" />}
         Add to log
       </Button>
     </form>
